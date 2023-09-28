@@ -1,5 +1,7 @@
 import express from 'express'
-import database from './database'
+import database from './database.js'
+
+database.search('to').then(console.log)
 
 const app = express()
 
