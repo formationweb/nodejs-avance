@@ -42,3 +42,7 @@ Dans cet exercice, vous allez créer votre propre système de base de données b
      3. **Création de Routes:**
    - Créez des routes pour effectuer les opérations CRUD (Create, Read, Update, Delete) sur votre base de données JSON.
      - Par exemple: `GET /users/:id` pour récupérer le contenu d'un fichier JSON, `POST /users` pour créer un nouveau fichier JSON, etc.
+
+     ```js
+     req.params.id
+     ```

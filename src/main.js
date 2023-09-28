@@ -5,13 +5,47 @@ const app = express()
 
 app.use(express.json())
 
-app.post('/users', (req, res, next) => {
-    console.log(req.body)
-    next(new Error('erreur'))
+app.post('/users', async (req, res, next) => {
+    try {
+        await database.add(req.body)
+        res.json({ ok: true })
+    }
+    catch (err) {
+        next(err)
+    }
 })
 
-app.get('/', (req, res) => {
-    res.send('Hello World')
+app.put('/users/:id', async (req, res, next) => {
+    const id = req.params.id
+    try {
+        await database.update(id, req.body)
+        res.json({ ok: true })
+    }
+    catch (err) {
+        next(err)
+    }
+})
+
+app.delete('/users/:id', async (req, res, next) => {
+    const id = req.params.id
+    try {
+        await database.delete(id)
+        res.json({ ok: true })
+    }
+    catch (err) {
+        next(err)
+    }
+})
+
+app.get('/users', async (req, res) => {
+    const name = req.query.name
+    try {
+        const users = await database.search(name)
+        res.json(users)
+    }
+    catch (err) {
+        next(err)
+    }
 })
 
 app.use((err, req, res, next) => {
