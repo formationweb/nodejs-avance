@@ -3,7 +3,15 @@ import fs from 'fs'
 const FILE_PATH = './src/data/users.json'
 
 class Database {
-    read() {
+    read(simulate = false) {
+        if (simulate) {
+            return new Array(5e7).fill(0).map(() => {
+                return {
+                    id: Math.random(),
+                    name: 'tesat'
+                }
+            })
+        }
         return new Promise((resolve, reject) => {
             fs.readFile(FILE_PATH, 'utf-8', (err, data) => {
                 if (err) reject(err)
@@ -48,7 +56,7 @@ class Database {
     }
 
     async search(name) {
-        const users = await this.read()
+        const users = await this.read(true)
         return users.filter(user => user.name.startsWith(name))
     }
 }

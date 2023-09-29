@@ -48,6 +48,10 @@ app.get('/users', async (req, res) => {
     }
 })
 
+app.get('/', (req, res) => {
+    res.send('Hello')
+})
+
 app.use((err, req, res, next) => {
     res.status(500).send('Erreur')
 })
