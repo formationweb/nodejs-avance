@@ -1,17 +1,22 @@
-// 0, 1, 1, 2, 3, 5, 8
+import { Worker } from 'worker_threads'
 
-function fibonacci(n) {
-    if (n <=1) {
-        return n
-    }
-    else {
-        return fibonacci(n -1) + fibonacci(n - 2)
-    }
-}
 
-console.time()
-setImmediate(() => {
-    fibonacci(50)
+const worker = new Worker('./worker.js')
+
+worker.on('message', (sum) => {
+    console.log(sum)
 })
-console.log('ok')
-console.timeEnd()
+
+worker.on('error', (err) => {
+    console.log(err)
+})
+
+worker.on('exit', () => {
+   
+})
+
+
+worker.postMessage(50)
+
+
+worker.terminate() // 

@@ -2,12 +2,21 @@ import fs from 'fs'
 
 const FILE_PATH = './src/data/users.json'
 
-const users = new Array(5e7).fill(0).map(() => {
+const users = new Array(5e5).fill(0).map(() => {
     return {
         id: Math.random(),
         name: 'tesat'
     }
 })
+
+function fibonacci(n) {
+    if (n <=1) {
+        return n
+    }
+    else {
+        return fibonacci(n -1) + fibonacci(n - 2)
+    }
+}
 
 class Database {
     read(simulate = false) {
@@ -66,6 +75,8 @@ class Database {
 
         await new Promise((resolve, reject) => {
             function searchChunk() {
+                fibonacci(40)
+                console.log(indexChunk)
                 for (let i = indexChunk; i < indexChunk + CHUNK; i++) {
                     const user = users[i]
                     if (user) {
