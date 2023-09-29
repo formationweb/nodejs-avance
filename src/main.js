@@ -1,4 +1,6 @@
 import express from 'express'
+import https from 'https'
+import fs from 'fs'
 import { db } from './database.js'
 import Piscina from 'piscina'
 
@@ -7,6 +9,13 @@ const worker = new Piscina({
 })
 
 const app = express()
+
+const options = {
+    key: fs.readFileSync('ssl/key.pem'),
+    cert: fs.readFileSync('ssl/cert.pem')
+}
+
+const server = https.createServer(options, app)
 
 app.use(express.json())
 
@@ -57,7 +66,15 @@ app.get('/users', async (req, res, next) => {
     }
 })
 
+let  users
+
 app.get('/', (req, res) => {
+   /* users =  new Array(5e3).fill(0).map(() => {
+        return {
+            id: Math.random(),
+            name: 'tesat'
+        }
+    })*/
     res.send('Hello')
 })
 
@@ -66,6 +83,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Erreur')
 })
 
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log('Serveur sur le port 3000')
 })

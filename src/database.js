@@ -5,14 +5,14 @@ const FILE_PATH = './src/data/users.json'
 
 let users
 
-if (!isMainThread) {
-    users = new Array(5e5).fill(0).map(() => {
+//if (!isMainThread) {
+    users = new Array(1).fill(0).map(() => {
         return {
             id: Math.random(),
             name: 'tesat'
         }
     })
-}
+//}
 
 
 function fibonacci(n) {
