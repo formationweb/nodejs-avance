@@ -46,3 +46,9 @@ Dans cet exercice, vous allez créer votre propre système de base de données b
      ```js
      req.params.id
      ```
+
+     4. **Worker**
+
+     Pour améliorer les performances de votre application et éviter de bloquer le thread principal, vous décidez de déplacer cette fonction de recherche dans un Worker Node.js. De plus, pour gérer de manière asynchrone les résultats de la recherche, vous utiliserez des promesses.
+
+> Note: Envoyez toute la liste des utilisateurs au Worker n’est pas forcément la meilleure solution. Le Worker pourrait-elle se charger de récupèrer la liste ? (c’est à dire création du tableau users dans le Worker)

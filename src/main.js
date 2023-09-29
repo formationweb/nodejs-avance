@@ -1,5 +1,10 @@
 import express from 'express'
-import database from './database.js'
+import { db } from './database.js'
+import Piscina from 'piscina'
+
+const worker = new Piscina({
+    filename: './src/database.js'
+})
 
 const app = express()
 
@@ -7,7 +12,7 @@ app.use(express.json())
 
 app.post('/users', async (req, res, next) => {
     try {
-        await database.add(req.body)
+        await db.add(req.body)
         res.json({ ok: true })
     }
     catch (err) {
@@ -18,7 +23,7 @@ app.post('/users', async (req, res, next) => {
 app.put('/users/:id', async (req, res, next) => {
     const id = req.params.id
     try {
-        await database.update(id, req.body)
+        await db.update(id, req.body)
         res.json({ ok: true })
     }
     catch (err) {
@@ -29,7 +34,7 @@ app.put('/users/:id', async (req, res, next) => {
 app.delete('/users/:id', async (req, res, next) => {
     const id = req.params.id
     try {
-        await database.delete(id)
+        await db.delete(id)
         res.json({ ok: true })
     }
     catch (err) {
@@ -37,10 +42,14 @@ app.delete('/users/:id', async (req, res, next) => {
     }
 })
 
-app.get('/users', async (req, res) => {
+app.get('/users', async (req, res, next) => {
     const name = req.query.name
     try {
-        const users = await database.search(name)
+       /* const users = await new Promise((resolve, reject) => {
+            worker.postMessage(name)
+            worker.on('message', resolve)
+        })*/
+        const users = await worker.run(name)
         res.json(users)
     }
     catch (err) {
@@ -53,6 +62,7 @@ app.get('/', (req, res) => {
 })
 
 app.use((err, req, res, next) => {
+    console.log(err)
     res.status(500).send('Erreur')
 })
 

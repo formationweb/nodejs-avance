@@ -1,24 +1,37 @@
 import fs from 'fs'
+import { parentPort, isMainThread } from 'worker_threads'
 
 const FILE_PATH = './src/data/users.json'
 
-const users = new Array(5e5).fill(0).map(() => {
-    return {
-        id: Math.random(),
-        name: 'tesat'
-    }
-})
+let users
+
+if (!isMainThread) {
+    users = new Array(5e5).fill(0).map(() => {
+        return {
+            id: Math.random(),
+            name: 'tesat'
+        }
+    })
+}
+
 
 function fibonacci(n) {
-    if (n <=1) {
+    if (n <= 1) {
         return n
     }
     else {
-        return fibonacci(n -1) + fibonacci(n - 2)
+        return fibonacci(n - 1) + fibonacci(n - 2)
     }
 }
 
 class Database {
+    /*constructor() {
+        parentPort?.on('message', async (name) => {
+            const users = await this.search(name)
+            parentPort.postMessage(users)
+        })
+    }*/
+
     read(simulate = false) {
         if (simulate) {
             return users
@@ -100,4 +113,8 @@ class Database {
     }
 }
 
-export default new Database()
+export const db =  new Database()
+
+export default (name) => {
+   return db.search(name)
+}
