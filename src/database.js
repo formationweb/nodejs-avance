@@ -2,15 +2,17 @@ import fs from 'fs'
 
 const FILE_PATH = './src/data/users.json'
 
+const users = new Array(5e7).fill(0).map(() => {
+    return {
+        id: Math.random(),
+        name: 'tesat'
+    }
+})
+
 class Database {
     read(simulate = false) {
         if (simulate) {
-            return new Array(5e7).fill(0).map(() => {
-                return {
-                    id: Math.random(),
-                    name: 'tesat'
-                }
-            })
+            return users
         }
         return new Promise((resolve, reject) => {
             fs.readFile(FILE_PATH, 'utf-8', (err, data) => {
@@ -57,7 +59,33 @@ class Database {
 
     async search(name) {
         const users = await this.read(true)
-        return users.filter(user => user.name.startsWith(name))
+
+        let indexChunk = 0
+        let usersFiltered = []
+        const CHUNK = 20000
+
+        await new Promise((resolve, reject) => {
+            function searchChunk() {
+                for (let i = indexChunk; i < indexChunk + CHUNK; i++) {
+                    const user = users[i]
+                    if (user) {
+                        if (user.name.startsWith(name)) {
+                            usersFiltered.push(user)
+                        }
+                    }
+                    else { // on sort de la boucle
+                        resolve()
+                        return
+                    }
+                }
+                indexChunk += CHUNK
+                setImmediate(searchChunk)
+            }
+
+            searchChunk()
+        })
+
+        return usersFiltered
     }
 }
 
